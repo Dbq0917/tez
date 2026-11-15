@@ -1576,6 +1576,7 @@ public class TaskAttemptImpl implements TaskAttempt,
       TaskAttemptEventStatusUpdate sEvent = (TaskAttemptEventStatusUpdate) event;
       TaskStatusUpdateEvent statusEvent = sEvent.getStatusEvent();
       ta.reportedStatus.state = ta.getState();
+      float previousProgress = ta.reportedStatus.progress;
       ta.reportedStatus.progress = statusEvent.getProgress();
       if (statusEvent.getCounters() != null) {
         ta.reportedStatus.counters = statusEvent.getCounters();
@@ -1583,7 +1584,8 @@ public class TaskAttemptImpl implements TaskAttempt,
       if (statusEvent.getStatistics() != null) {
         ta.statistics = statusEvent.getStatistics();
       }
-      if (statusEvent.getProgressNotified()) {
+      if (statusEvent.getProgressNotified() ||
+          Float.compare(previousProgress, statusEvent.getProgress()) != 0) {
         ta.lastNotifyProgressTimestamp = ta.clock.getTime();
       } else {
         long currTime = ta.clock.getTime();

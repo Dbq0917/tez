@@ -21,6 +21,7 @@ package org.apache.tez.dag.api;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.lang.reflect.Field;
@@ -54,6 +55,14 @@ public class TestTezConfiguration {
 
     Configuration tezConf5 = new Configuration(true);
     assertNull(tezConf5.get(TezConfiguration.TEZ_LIB_URIS));
+  }
+
+  @Test
+  @Timeout(value = 5000, unit = TimeUnit.MILLISECONDS)
+  public void testTaskProgressStuckIntervalEnabledByDefault() {
+    assertTrue(TezConfiguration.TEZ_TASK_PROGRESS_STUCK_INTERVAL_MS_DEFAULT > 0);
+    assertTrue(TezConfiguration.TEZ_TASK_PROGRESS_STUCK_INTERVAL_MS_DEFAULT >
+        TezConfiguration.TASK_HEARTBEAT_TIMEOUT_MS_DEFAULT);
   }
 
   @Test

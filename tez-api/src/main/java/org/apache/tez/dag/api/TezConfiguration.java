@@ -1090,13 +1090,14 @@ public class TezConfiguration extends Configuration {
    * for this interval then the task will be considered hung and terminated.
    * The value for this config should be larger than {@link TezConfiguration#TASK_HEARTBEAT_TIMEOUT_MS}
    * and larger than 2 times the value of {@link TezConfiguration#TEZ_TASK_AM_HEARTBEAT_INTERVAL_MS}.
-   * A config value &lt;=0 disables this.
+   * Defaults to 10 minutes. A config value &lt;=0 disables this.
    */
   @ConfigurationScope(Scope.VERTEX)
   @ConfigurationProperty
   public static final String TEZ_TASK_PROGRESS_STUCK_INTERVAL_MS = TEZ_TASK_PREFIX +
     "progress.stuck.interval-ms";
-  public static final long TEZ_TASK_PROGRESS_STUCK_INTERVAL_MS_DEFAULT = -1;
+  public static final long TEZ_TASK_PROGRESS_STUCK_INTERVAL_MS_DEFAULT =
+      TimeUnit.MINUTES.toMillis(10);
 
   /**
    * Whether to generate counters per IO or not. Enabling this will rename

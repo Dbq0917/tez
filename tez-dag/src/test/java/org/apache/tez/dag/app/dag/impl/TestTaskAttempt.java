@@ -1070,6 +1070,7 @@ public class TestTaskAttempt {
     when(mockClock.getTime()).thenReturn(100l);
     taImpl.handle(new TaskAttemptEventStatusUpdate(
         taskAttemptID, new TaskStatusUpdateEvent(null, 0.1f, null, false)));
+    assertEquals(100l, taImpl.lastNotifyProgressTimestamp);
     verify(eventHandler, atLeast(1)).handle(arg.capture());
     if (arg.getValue() instanceof TaskAttemptEventAttemptFailed) {
       TaskAttemptEventAttemptFailed fEvent = (TaskAttemptEventAttemptFailed) arg.getValue();
@@ -1082,7 +1083,15 @@ public class TestTaskAttempt {
     }
     when(mockClock.getTime()).thenReturn(200l);
     taImpl.handle(new TaskAttemptEventStatusUpdate(
-        taskAttemptID, new TaskStatusUpdateEvent(null, 0.1f, null, false)));
+        taskAttemptID, new TaskStatusUpdateEvent(null, 0.2f, null, false)));
+    assertEquals(200l, taImpl.lastNotifyProgressTimestamp);
+    when(mockClock.getTime()).thenReturn(250l);
+    taImpl.handle(new TaskAttemptEventStatusUpdate(
+        taskAttemptID, new TaskStatusUpdateEvent(null, 0.2f, null, false)));
+    assertEquals(200l, taImpl.lastNotifyProgressTimestamp);
+    when(mockClock.getTime()).thenReturn(300l);
+    taImpl.handle(new TaskAttemptEventStatusUpdate(
+        taskAttemptID, new TaskStatusUpdateEvent(null, 0.2f, null, false)));
     verify(eventHandler, atLeast(1)).handle(arg.capture());
     assertInstanceOf(TaskAttemptEventAttemptFailed.class, arg.getValue(),
         "This should have been an attempt failed event!");
